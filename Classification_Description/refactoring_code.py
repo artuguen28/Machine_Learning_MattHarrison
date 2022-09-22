@@ -5,7 +5,8 @@ from sklearn import (
     ensemble,
     preprocessing,
     tree,
-    impute
+    impute,
+    metrics
 )
 
 from sklearn.metrics import (
@@ -32,6 +33,8 @@ from yellowbrick.classifier import (
 from yellowbrick.model_selection import LearningCurve
 
 import pandas_profiling
+
+from sklearn.dummy import DummyClassifier
 
 
 df = pd.read_excel(r"Classification_Description\titanic3.xls")
@@ -77,4 +80,11 @@ def get_train_test_X_y(df, y_col, size=0.3, std_cols=None):
 ti_df = tweak_titanic(df)
 std_cols = "pclass,age,sibsp,fare".split(",")
 X_train, X_test, y_train, y_test = get_train_test_X_y(ti_df, "survived", std_cols=std_cols)
-print("Ola")
+
+bm = DummyClassifier()
+bm.fit(X_train, y_train)
+print(bm.score(X_test, y_test)) #Precisao
+
+print(metrics.precision_score(
+    y_test, bm.predict(X_test)
+))
